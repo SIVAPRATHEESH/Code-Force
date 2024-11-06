@@ -1,0 +1,142 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+import requests
+url ="https://nvd.nist.gov/vuln/vulnerability-detail-pages"
+page=requests.get(url)
+print(page.text)
+# URL of the webpage to scrape
+try:
+    # Send a GET request to the URL
+    response = requests.get(url)
+    response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Find product listings (adjust the selectors based on the website's structure)
+    products = soup.find_all('div', class_='product-item-info')
+
+    if products:
+        data = []
+        # Loop through each product and extract details
+        for product in products:
+            product_name = product.find('a', class_='product-item-link').text.strip()
+            product_price = product.find('span', class_='price').text.strip()
+
+            # Append the extracted data to the list
+            data.append([product_name, product_price])
+
+        # Define the CSV file name
+        csv_filename = 'acer_products.csv'
+        
+        # Save the data to a CSV file
+        with open(csv_filename, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            # Write the headers
+            writer.writerow(['Product Name', 'Price'])
+            # Write the data rows
+            writer.writerows(data)
+
+        print(f"Data has been successfully scraped and saved to {csv_filename}")
+    else:
+        print("No products found on the webpage.")
+
+except requests.exceptions.HTTPError as http_err:
+    print(f"HTTP error occurred: {http_err}")
+except Exception as err:
+    print(f"An error occurred: {err}")
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+def scrape_website(url, csv_filename='scraped_data.csv'):
+    try:
+        # Send a GET request to the URL
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+
+        # Parse the HTML content using BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Extract all table rows (adjust selectors based on the structure)
+        rows = soup.find_all('tr')
+
+        # If rows are found, extract the data
+        if rows:
+            data = []
+            # Loop through each row
+            for row in rows:
+                # Extract all cells within the row (th or td)
+                cells = row.find_all(['th', 'td'])
+                row_data = [cell.get_text(strip=True) for cell in cells]
+                if row_data:  # Only add non-empty rows
+                    data.append(row_data)
+
+            # Save the data to a CSV file
+            with open(csv_filename, 'w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerows(data)
+
+            print(f"Data has been successfully scraped and saved to {csv_filename}")
+        else:
+            print("No data found on the webpage.")
+
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+
+# URL of the webpage to scrape
+url = "https://nvd.nist.gov/vuln/vulnerability-detail-pages"  # Replace with the URL you want to scrape
+
+# Call the function with the desired URL and output CSV filename
+scrape_website(url, 'Vulnerability_data.csv')
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+# URL of the webpage to scrape
+url = 'https://nvd.nist.gov/vuln/vulnerability-detail-pages'
+
+try:
+    # Send a GET request to the URL
+    response = requests.get(url)
+    response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Find product listings (adjust the selectors based on the website's structure)
+    products = soup.find_all('div', class_='product-item-info')
+
+    if products:
+        data = []
+        # Loop through each product and extract details
+        for product in products:
+            product_name = product.find('a', class_='product-item-link').text.strip()
+            product_price = product.find('span', class_='price').text.strip()
+
+            # Append the extracted data to the list
+            data.append([product_name, product_price])
+
+        # Define the CSV file name
+        csv_filename = 'acer_products.csv'
+        
+        # Save the data to a CSV file
+        with open(csv_filename, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            # Write the headers
+            writer.writerow(['Product Name', 'Price'])
+            # Write the data rows
+            writer.writerows(data)
+
+        print(f"Data has been successfully scraped and saved to {csv_filename}")
+    else:
+        print("No products found on the webpage.")
+
+except requests.exceptions.HTTPError as http_err:
+    print(f"HTTP error occurred: {http_err}")
+except Exception as err:
+    print(f"An error occurred: {err}")
+
